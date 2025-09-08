@@ -1,9 +1,6 @@
 package com.cinescopefinal.CineScope.service.impl;
 
-import com.cinescopefinal.CineScope.dto.JwtAuthenticationResponse;
-import com.cinescopefinal.CineScope.dto.RefreshTokenRequest;
-import com.cinescopefinal.CineScope.dto.SignUpRequest;
-import com.cinescopefinal.CineScope.dto.SigninRequest;
+import com.cinescopefinal.CineScope.dto.*;
 import com.cinescopefinal.CineScope.entities.Role;
 import com.cinescopefinal.CineScope.entities.Users;
 import com.cinescopefinal.CineScope.repository.UserRepository;
@@ -15,7 +12,10 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class AuthenticationServiceImpl implements AuthenticationService {
@@ -39,12 +39,17 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         users.setRole(Role.USER);
         users.setPassword(passwordEncoder.encode(signUpRequest.getPassword()));
         users.setSubscription(signUpRequest.getSubscription());
-        users.setMovieTypes(signUpRequest.getMovie_type());
+
+        // Convert List<Integer> -> CSV string for DB
+        String movieTypeStr = signUpRequest.getMovie_type().stream()
+                .map(String::valueOf)
+                .collect(Collectors.joining(","));
+        users.setMovieTypes(movieTypeStr);
 
         return userRepository.save(users);
     }
 
-    public JwtAuthenticationResponse signin(SigninRequest signinRequest) {
+    /*public JwtAuthenticationResponse signin(SigninRequest signinRequest) {
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(signinRequest.getEmail(), signinRequest.getPassword()));
 
         var user = userRepository.findByEmail(signinRequest.getEmail()).orElseThrow(() -> new AuthenticationException(("Invalid email or password")) {
@@ -54,24 +59,96 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         var refreshToken = jwtService.generateRefreshToken(new HashMap<>(), user);
 
         JwtAuthenticationResponse jwtAuthenticationResponse = new JwtAuthenticationResponse();
-        jwtAuthenticationResponse.setToken(jwt);
+        jwtAuthenticationResponse.setAccessToken(jwt);
         jwtAuthenticationResponse.setRefreshToken(refreshToken);
 
         return jwtAuthenticationResponse;
+    }*/
+
+/*    public SigninResponse signin(SigninRequest signinRequest) {
+        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(signinRequest.getEmail(), signinRequest.getPassword()));
+
+        var user = userRepository.findByEmail(signinRequest.getEmail()).orElseThrow(() -> new AuthenticationException(("Invalid email or password")) {
+        });
+
+        var jwt = jwtService.generateToken(user);
+        var refreshToken = jwtService.generateRefreshToken(new HashMap<>(), user);
+
+        List<Integer> movieTypeIds = Arrays.stream(user.getMovieTypes().split(","))
+                .map(String::trim)
+                .filter(s -> !s.isEmpty())
+                .map(Integer::parseInt)
+                .collect(Collectors.toList());
+
+        SigninResponse signinResponse = new SigninResponse();
+        signinResponse.setAccessToken(jwt);
+        signinResponse.setStatus(user.getStatus());
+        signinResponse.setMovieTypes(movieTypeIds);
+        signinResponse.setRole(user.getRole());
+//        signinResponse.setRefreshToken(refreshToken);
+
+        return signinResponse;
+    }*/
+
+    @Override
+    public SigninResult signin(SigninRequest signinRequest) {
+        authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(signinRequest.getEmail(), signinRequest.getPassword())
+        );
+
+        var user = userRepository.findByEmail(signinRequest.getEmail())
+                .orElseThrow(() -> new AuthenticationException("Invalid email or password") {});
+
+        var accessToken = jwtService.generateToken(user);
+        var refreshToken = jwtService.generateRefreshToken(new HashMap<>(), user);
+
+        Token token = new Token(accessToken, refreshToken);
+
+        return new SigninResult(token, user);
     }
 
-    public JwtAuthenticationResponse refreshToken(RefreshTokenRequest refreshTokenRequest) {
+/*    public JwtAuthenticationResponse refreshToken(RefreshTokenRequest refreshTokenRequest) {
         String userEmail = jwtService.extractUserName(refreshTokenRequest.getToken());
         Users users = userRepository.findByEmail(userEmail).orElseThrow();
         if(jwtService.isTokenValid(refreshTokenRequest.getToken(), users)) {
             var jwt = jwtService.generateToken(users);
 
             JwtAuthenticationResponse jwtAuthenticationResponse = new JwtAuthenticationResponse();
-            jwtAuthenticationResponse.setToken(jwt);
+            jwtAuthenticationResponse.setAccessToken(jwt);
             jwtAuthenticationResponse.setRefreshToken(refreshTokenRequest.getToken());
 
             return jwtAuthenticationResponse;
         }
         return null;
+    }*/
+
+    @Override
+    public SigninResponse refreshToken(RefreshTokenRequest refreshTokenRequest) {
+        String userEmail = jwtService.extractUserName(refreshTokenRequest.getToken());
+        Users users = userRepository.findByEmail(userEmail)
+                .orElseThrow(()-> new RuntimeException("User not found"));
+        if(jwtService.isTokenValid(refreshTokenRequest.getToken(), users)) {
+//            var jwt = jwtService.generateToken(users);
+            String newAccessToken = jwtService.generateToken(users);
+            String refreshToken = refreshTokenRequest.getToken();
+
+            // Parse movieTypes
+            List<Integer> movieTypeIds = Arrays.stream(users.getMovieTypes().split(","))
+                    .map(String::trim)
+                    .filter(s -> !s.isEmpty())
+                    .map(Integer::parseInt)
+                    .collect(Collectors.toList());
+
+            // Build response just like signin
+            SigninResponse response = new SigninResponse();
+            response.setAccessToken(newAccessToken);
+            response.setRefreshToken(refreshToken);
+            response.setStatus(users.getStatus());
+            response.setMovieTypes(movieTypeIds);
+            response.setRole(users.getRole());
+
+            return response;
+        }
+        throw new RuntimeException("Invalid refresh token");
     }
 }

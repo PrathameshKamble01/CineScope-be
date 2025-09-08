@@ -14,7 +14,7 @@ public class Users implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
     @Column
     @NotBlank
     private String name;
@@ -29,7 +29,7 @@ public class Users implements UserDetails {
     @Column
     private String subscription = "no";
     @Column
-    private String status = "Active";
+    private Status status = Status.ACTIVE;
     @Column(name = "movie_types")
     private String movieTypes;
 
@@ -40,11 +40,11 @@ public class Users implements UserDetails {
     public void setMovieTypes(String movieTypes) {
         this.movieTypes = movieTypes;
     }
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -85,13 +85,6 @@ public class Users implements UserDetails {
         this.subscription = subscription;
     }
 
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -128,7 +121,15 @@ public class Users implements UserDetails {
         return true;
     }
 
-    public Users(Integer id, String name, String email, String password, Role role, String subscription, String status, String movieTypes) {
+    public Status getStatus() {
+        return status;
+    }
+
+    public void setStatus(Status status) {
+        this.status = status;
+    }
+
+    public Users(Long id, String name, String email, String password, Role role, String subscription, Status status, String movieTypes) {
         this.id = id;
         this.name = name;
         this.email = email;

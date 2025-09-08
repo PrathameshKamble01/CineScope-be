@@ -1,14 +1,16 @@
 package com.cinescopefinal.CineScope.dto;
 
+import java.util.List;
+
 public class SignUpRequest {
 
     private String name;
     private String email;
     private String password;
     private String subscription;
-    private String movie_type;
+    private List<Integer> movie_type;
 
-    public SignUpRequest(String name, String email, String password, String subscription, String movie_type) {
+    public SignUpRequest(String name, String email, String password, String subscription, List<Integer> movieTypes) {
         this.name = name;
         this.email = email;
         this.password = password;
@@ -51,11 +53,11 @@ public class SignUpRequest {
         this.subscription = subscription;
     }
 
-    public String getMovie_type() {
+    public List<Integer> getMovie_type() {
         return movie_type;
     }
 
-    public void setMovie_type(String movie_type) {
+    public void setMovie_type(List<Integer> movie_type) {
         this.movie_type = movie_type;
     }
 

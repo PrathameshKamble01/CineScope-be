@@ -23,10 +23,14 @@ public class JwtServiceImpl implements JWTService {
 
     @Value("${jwt.secrethex}")
     private String jwtSecretHex;
+
+    // ⏱ Expiration durations
+    private static final long ACCESS_TOKEN_EXPIRATION_MS = 15 * 60 * 1000;       // 15 minutes
+    private static final long REFRESH_TOKEN_EXPIRATION_MS = 30L * 24 * 60 * 60 * 1000; // 30 days
     public String generateToken(UserDetails userDetails){
         return Jwts.builder().setSubject(userDetails.getUsername())
                 .issuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 24))
+                .setExpiration(new Date(System.currentTimeMillis() + ACCESS_TOKEN_EXPIRATION_MS))
                 .signWith(getSigninKey(), SignatureAlgorithm.HS256)
                 .compact();
     }
@@ -34,7 +38,7 @@ public class JwtServiceImpl implements JWTService {
     public String generateRefreshToken(Map<String, Object> extraClaims, UserDetails userDetails){
         return Jwts.builder().setClaims(extraClaims).setSubject(userDetails.getUsername())
                 .issuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + 604800000))
+                .setExpiration(new Date(System.currentTimeMillis() + REFRESH_TOKEN_EXPIRATION_MS))
                 .signWith(getSigninKey(), SignatureAlgorithm.HS256)
                 .compact();
     }

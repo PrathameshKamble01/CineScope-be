@@ -1,14 +1,13 @@
 package com.cinescopefinal.CineScope.dto;
 
-public class JwtAuthenticationResponse {
-
+public class Token {
     private String accessToken;
     private String refreshToken;
 
-    public JwtAuthenticationResponse() {
+    public Token() {
     }
 
-    public JwtAuthenticationResponse(String accessToken, String refreshToken) {
+    public Token(String accessToken, String refreshToken) {
         this.accessToken = accessToken;
         this.refreshToken = refreshToken;
     }
@@ -17,8 +16,8 @@ public class JwtAuthenticationResponse {
         return accessToken;
     }
 
-    public void setAccessToken(String token) {
-        this.accessToken = token;
+    public void setAccessToken(String accessToken) {
+        this.accessToken = accessToken;
     }
 
     public String getRefreshToken() {
