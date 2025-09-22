@@ -1,6 +1,6 @@
 package com.cinescopefinal.CineScope.controller;
 
-import com.cinescopefinal.CineScope.entities.MovieType;
+import com.cinescopefinal.CineScope.entities.Genres;
 import com.cinescopefinal.CineScope.service.MovieTypeService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,15 +20,15 @@ public class CategoryController {
 
     // Get all categories
     @GetMapping("/getMovieTypes")
-    public ResponseEntity<List<MovieType>> getAllCategories() {
-        List<MovieType> categories = movieTypeService.getAllCategories();
+    public ResponseEntity<List<Genres>> getAllCategories() {
+        List<Genres> categories = movieTypeService.getAllCategories();
         return ResponseEntity.ok(categories);
     }
 
     // Add a new category
     @PostMapping
-    public ResponseEntity<MovieType> addCategory(@RequestBody MovieType category) {
-        MovieType createdCategory = movieTypeService.addCategory(category);
+    public ResponseEntity<Genres> addCategory(@RequestBody Genres category) {
+        Genres createdCategory = movieTypeService.addCategory(category);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdCategory);
     }
 

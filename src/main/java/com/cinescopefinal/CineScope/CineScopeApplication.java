@@ -1,7 +1,9 @@
 package com.cinescopefinal.CineScope;
 
-import com.cinescopefinal.CineScope.entities.Role;
+import com.cinescopefinal.CineScope.entities.enums.Role;
+import com.cinescopefinal.CineScope.entities.enums.Status;
 import com.cinescopefinal.CineScope.entities.Users;
+import com.cinescopefinal.CineScope.entities.enums.Subscription;
 import com.cinescopefinal.CineScope.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -30,9 +32,9 @@ public class CineScopeApplication implements CommandLineRunner {
 			users.setName("admin");
 			users.setRole(Role.ADMIN);
 			users.setPassword(new BCryptPasswordEncoder().encode("admin"));
-			users.setSubscription("Yes");
+			users.setSubscription(Subscription.PREMIMUM);
 			users.setMovieTypes("1,2,3,4,5");
-			users.setStatus("Active");
+			users.setStatus(Status.ACTIVE);
 			usersRepository.saveAndFlush(users);
 			System.out.println("Admin user created.");
 		}

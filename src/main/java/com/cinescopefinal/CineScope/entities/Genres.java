@@ -6,12 +6,12 @@ import jakarta.persistence.*;
 import java.util.List;
 
 @Entity
-@Table(name = "movie_type")
-public class MovieType {
+@Table(name = "genres")
+public class Genres {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private int genreId;
 
     @Column
     private String type;  // Genre like Action, Sci-Fi, etc.
@@ -23,11 +23,11 @@ public class MovieType {
 
     // Getters and Setters
     public int getId() {
-        return id;
+        return genreId;
     }
 
     public void setId(int id) {
-        this.id = id;
+        this.genreId = genreId;
     }
 
     public String getType() {

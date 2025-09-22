@@ -23,11 +23,6 @@ public class UserController {
         this.userRepository = userRepository;
     }
 
-    @GetMapping
-    public ResponseEntity<String> hello() {
-        return ResponseEntity.ok("Hi From USER....");
-    }
-
     @GetMapping("/getAllUsers")
     public ResponseEntity<List<Users>> getAllUsers() {
         try {

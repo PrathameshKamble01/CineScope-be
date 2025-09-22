@@ -1,6 +1,11 @@
 package com.cinescopefinal.CineScope.service.impl;
 
+import com.cinescopefinal.CineScope.dto.SignUpRequest;
+import com.cinescopefinal.CineScope.entities.enums.Role;
+import com.cinescopefinal.CineScope.entities.enums.Status;
 import com.cinescopefinal.CineScope.entities.Users;
+import com.cinescopefinal.CineScope.entities.enums.Subscription;
+import com.cinescopefinal.CineScope.exception.DuplicateResourceException;
 import com.cinescopefinal.CineScope.repository.UserRepository;
 import com.cinescopefinal.CineScope.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,5 +52,39 @@ public class UserServiceImpl implements UserService {
             e.printStackTrace();
             return null;
         }
+    }
+
+    @Override
+    public Users signup(SignUpRequest signUpRequest) {
+        // Check for existing email
+        if (userRepository.findByEmail(signUpRequest.getEmail()).isPresent()) {
+            throw new DuplicateResourceException("Email already exists");
+        }
+
+
+        // Optional: check for duplicate password (not usually recommended)
+        if (userRepository.existsByPassword(signUpRequest.getPassword())) {
+            throw new RuntimeException("Password already in use. Please choose a different password.");
+        }
+
+        Users newUser = new Users();
+        newUser.setName(signUpRequest.getName());
+        newUser.setEmail(signUpRequest.getEmail());
+        newUser.setPassword(signUpRequest.getPassword());
+        newUser.setSubscription(
+                Subscription.valueOf(signUpRequest.getSubscription().toUpperCase())
+        );
+
+        // Convert List<Integer> to comma-separated String
+        String movieTypesString = signUpRequest.getMovie_type().stream()
+                .map(String::valueOf)
+                .reduce((a, b) -> a + "," + b)
+                .orElse("");
+        newUser.setMovieTypes(movieTypesString);
+
+        newUser.setRole(Role.USER); // default role
+        newUser.setStatus(Status.ACTIVE); // default status
+
+        return userRepository.save(newUser);
     }
 }

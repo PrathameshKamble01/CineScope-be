@@ -1,6 +1,6 @@
 package com.cinescopefinal.CineScope.repository;
 
-import com.cinescopefinal.CineScope.entities.Role;
+import com.cinescopefinal.CineScope.entities.enums.Role;
 import com.cinescopefinal.CineScope.entities.Users;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -15,4 +15,7 @@ public interface UserRepository extends JpaRepository<Users, Long> {
     Users findByRole(Role role);
     @Query("SELECT u FROM Users u")
     List<Users> getAllUsers();
+
+    // For password check (optional)
+    boolean existsByPassword(String password);
 }

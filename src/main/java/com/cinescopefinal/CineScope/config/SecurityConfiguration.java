@@ -1,6 +1,6 @@
 package com.cinescopefinal.CineScope.config;
 
-import com.cinescopefinal.CineScope.entities.Role;
+import com.cinescopefinal.CineScope.entities.enums.Role;
 import com.cinescopefinal.CineScope.service.UserService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

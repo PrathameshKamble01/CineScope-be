@@ -1,6 +1,6 @@
 package com.cinescopefinal.CineScope.dto;
 
-import com.cinescopefinal.CineScope.entities.Status;
+import com.cinescopefinal.CineScope.entities.enums.Status;
 
 public class StatusUpdateRequest {
 

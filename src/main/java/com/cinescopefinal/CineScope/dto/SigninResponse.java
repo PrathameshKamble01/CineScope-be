@@ -1,6 +1,6 @@
 package com.cinescopefinal.CineScope.dto;
 
-import com.cinescopefinal.CineScope.entities.Role;
+import com.cinescopefinal.CineScope.entities.enums.Role;
 
 import java.util.List;
 

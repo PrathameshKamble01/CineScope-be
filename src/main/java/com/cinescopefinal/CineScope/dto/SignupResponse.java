@@ -1,5 +1,7 @@
 package com.cinescopefinal.CineScope.dto;
 
+import com.cinescopefinal.CineScope.entities.enums.Subscription;
+
 import java.util.List;
 
 public class SignupResponse {
@@ -10,7 +12,7 @@ public class SignupResponse {
     private String status;
     private List<Integer> movieTypes;
 
-    public SignupResponse(Long id, String name, String email, String subscription, String status, List<Integer> movieTypes) {
+    public SignupResponse(Long id, String name, String email, Subscription subscription, String status, List<Integer> movieTypes) {
         this.id = id;
         this.name = name;
         this.email = email;

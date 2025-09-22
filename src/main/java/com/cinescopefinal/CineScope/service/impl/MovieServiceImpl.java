@@ -48,7 +48,7 @@ public class MovieServiceImpl implements MovieService {
         if (movie != null) {
             movie.setTitle(updatedMovie.getTitle());
             movie.setDescription(updatedMovie.getDescription());
-            movie.setReleaseYear(updatedMovie.getReleaseYear());
+            movie.setReleaseYear(updatedMovie.getReleaseYear().intValue());
             movie.setPosterUrl(updatedMovie.getPosterUrl());
             movie.setTrailorUrl(updatedMovie.getTrailorUrl());
             movie.setMovieUrl(updatedMovie.getMovieUrl());

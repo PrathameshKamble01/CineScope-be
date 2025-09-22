@@ -12,7 +12,7 @@ public class Movie {
 
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private int movie_id;
 
     @Column
     private String title;
@@ -21,7 +21,7 @@ public class Movie {
     private String description;
 
     @Column(name = "release_year")
-    private int releaseYear;
+    private Number releaseYear;
 
     @Column(name = "poster_url")
     private String posterUrl;
@@ -37,20 +37,20 @@ public class Movie {
 
     @ManyToMany
     @JoinTable(
-        name = "movie_movie_type",  // The join table between Movie and MovieType
+        name = "movie_genreTypes",  // The join table between Movie and genretupe
         joinColumns = @JoinColumn(name = "movie_id"),  // Foreign key for Movie
-        inverseJoinColumns = @JoinColumn(name = "movie_type_id")  // Foreign key for MovieType
+        inverseJoinColumns = @JoinColumn(name = "genre_id")  // Foreign key for genre
     )
 //    @JsonManagedReference
-    private List<MovieType> movieTypes;  // Genres associated with the movie
+    private List<Genres> genres;  // Genres associated with the movie
 
     // Getters and Setters
     public int getId() {
-        return id;
+        return movie_id;
     }
 
     public void setId(int id) {
-        this.id = id;
+        this.movie_id = movie_id;
     }
 
     public String getTitle() {
@@ -69,7 +69,7 @@ public class Movie {
         this.description = description;
     }
 
-    public int getReleaseYear() {
+    public Number getReleaseYear() {
         return releaseYear;
     }
 
@@ -109,11 +109,11 @@ public class Movie {
         this.createTime = createTime;
     }
 
-    public List<MovieType> getMovieTypes() {
-        return movieTypes;
+    public List<Genres> getMovieTypes() {
+        return genres;
     }
 
-    public void setMovieTypes(List<MovieType> movieTypes) {
-        this.movieTypes = movieTypes;
+    public void setMovieTypes(List<Genres> genres) {
+        this.genres = genres;
     }
 }
