@@ -21,7 +21,7 @@ public class Movie {
     private String description;
 
     @Column(name = "release_year")
-    private Number releaseYear;
+    private Integer releaseYear;
 
     @Column(name = "poster_url")
     private String posterUrl;
@@ -37,21 +37,40 @@ public class Movie {
 
     @ManyToMany
     @JoinTable(
-        name = "movie_genreTypes",  // The join table between Movie and genretupe
+        name = "user_movie_types",  // The join table between Movie and genretupe
         joinColumns = @JoinColumn(name = "movie_id"),  // Foreign key for Movie
         inverseJoinColumns = @JoinColumn(name = "genre_id")  // Foreign key for genre
     )
 //    @JsonManagedReference
-    private List<Genres> genres;  // Genres associated with the movie
+    private List<Genres> movieTypes;  // Genres associated with the movie
 
     // Getters and Setters
-    public int getId() {
+
+
+    public List<Genres> getMovieTypes() {
+        return movieTypes;
+    }
+
+    public void setMovieTypes(List<Genres> movieTypes) {
+        this.movieTypes = movieTypes;
+    }
+
+    public Integer getReleaseYear() {
+        return releaseYear;
+    }
+
+    public void setReleaseYear(Integer releaseYear) {
+        this.releaseYear = releaseYear;
+    }
+
+    public int getMovie_id() {
         return movie_id;
     }
 
-    public void setId(int id) {
+    public void setMovie_id(int movie_id) {
         this.movie_id = movie_id;
     }
+
 
     public String getTitle() {
         return title;
@@ -67,14 +86,6 @@ public class Movie {
 
     public void setDescription(String description) {
         this.description = description;
-    }
-
-    public Number getReleaseYear() {
-        return releaseYear;
-    }
-
-    public void setReleaseYear(int releaseYear) {
-        this.releaseYear = releaseYear;
     }
 
     public String getPosterUrl() {
@@ -109,11 +120,4 @@ public class Movie {
         this.createTime = createTime;
     }
 
-    public List<Genres> getMovieTypes() {
-        return genres;
-    }
-
-    public void setMovieTypes(List<Genres> genres) {
-        this.genres = genres;
-    }
 }

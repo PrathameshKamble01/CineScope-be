@@ -46,14 +46,14 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         users.setRole(Role.USER);
         users.setPassword(passwordEncoder.encode(signUpRequest.getPassword()));
         users.setSubscription(
-                Subscription.valueOf(signUpRequest.getSubscription().toUpperCase())
+                Subscription.valueOf(signUpRequest.getSubscription().name())
         );
 
         // Convert List<Integer> -> CSV string for DB
-        String movieTypeStr = signUpRequest.getMovie_type().stream()
+        String movieTypeStr = signUpRequest.getMovieTypes().stream()
                 .map(String::valueOf)
                 .collect(Collectors.joining(","));
-        users.setMovieTypes(movieTypeStr);
+        users.setGenres(movieTypeStr);
 
         return userRepository.save(users);
     }
@@ -66,7 +66,8 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         );
 
         var user = userRepository.findByEmail(signinRequest.getEmail())
-                .orElseThrow(() -> new BadCredentialsException("Invalid email or password") {});
+                .orElseThrow(() -> new BadCredentialsException("Invalid email or password") {
+                });
 
         var accessToken = jwtService.generateToken(user);
         var refreshToken = jwtService.generateRefreshToken(new HashMap<>(), user);
@@ -80,14 +81,14 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     public SigninResponse refreshToken(RefreshTokenRequest refreshTokenRequest) {
         String userEmail = jwtService.extractUserName(refreshTokenRequest.getToken());
         Users users = userRepository.findByEmail(userEmail)
-                .orElseThrow(()-> new RuntimeException("User not found"));
-        if(jwtService.isTokenValid(refreshTokenRequest.getToken(), users)) {
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        if (jwtService.isTokenValid(refreshTokenRequest.getToken(), users)) {
 //            var jwt = jwtService.generateToken(users);
             String newAccessToken = jwtService.generateToken(users);
             String refreshToken = refreshTokenRequest.getToken();
 
             // Parse movieTypes
-            List<Integer> movieTypeIds = Arrays.stream(users.getMovieTypes().split(","))
+            List<Integer> movieTypeIds = Arrays.stream(users.getGenres().split(","))
                     .map(String::trim)
                     .filter(s -> !s.isEmpty())
                     .map(Integer::parseInt)
@@ -123,9 +124,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         return null;
     }*/
 
-
-
-    /*public JwtAuthenticationResponse signin(SigninRequest signinRequest) {
+/*public JwtAuthenticationResponse signin(SigninRequest signinRequest) {
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(signinRequest.getEmail(), signinRequest.getPassword()));
 
         var user = userRepository.findByEmail(signinRequest.getEmail()).orElseThrow(() -> new AuthenticationException(("Invalid email or password")) {

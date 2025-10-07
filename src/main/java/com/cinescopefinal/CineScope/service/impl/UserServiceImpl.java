@@ -72,15 +72,15 @@ public class UserServiceImpl implements UserService {
         newUser.setEmail(signUpRequest.getEmail());
         newUser.setPassword(signUpRequest.getPassword());
         newUser.setSubscription(
-                Subscription.valueOf(signUpRequest.getSubscription().toUpperCase())
+                Subscription.valueOf(signUpRequest.getSubscription().name())
         );
 
         // Convert List<Integer> to comma-separated String
-        String movieTypesString = signUpRequest.getMovie_type().stream()
+        String movieTypesString = signUpRequest.getMovieTypes().stream()
                 .map(String::valueOf)
                 .reduce((a, b) -> a + "," + b)
                 .orElse("");
-        newUser.setMovieTypes(movieTypesString);
+        newUser.setGenres(movieTypesString);
 
         newUser.setRole(Role.USER); // default role
         newUser.setStatus(Status.ACTIVE); // default status

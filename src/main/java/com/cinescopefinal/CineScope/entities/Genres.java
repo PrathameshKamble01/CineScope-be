@@ -22,11 +22,13 @@ public class Genres {
     private List<Movie> movies;  // Movies associated with this type
 
     // Getters and Setters
-    public int getId() {
+
+
+    public int getGenreId() {
         return genreId;
     }
 
-    public void setId(int id) {
+    public void setGenreId(int genreId) {
         this.genreId = genreId;
     }
 

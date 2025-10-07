@@ -27,25 +27,31 @@ public class AuthenticationController {
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<SignupResponse> signup(@RequestBody SignUpRequest signUpRequest) {
+    public ResponseEntity<?> signup(@RequestBody SignUpRequest signUpRequest) {
 //        return ResponseEntity.ok(authenticationService.signup(signUpRequest));
 
-        Users savedUser = authenticationService.signup(signUpRequest);
+       try{
+           Users savedUser = authenticationService.signup(signUpRequest);
 
-        List<Integer> movieTypeIds = Arrays.stream(savedUser.getMovieTypes().split(","))
-                .map(String::trim)
-                .filter(s -> !s.isEmpty())
-                .map(Integer::parseInt)
-                .collect(Collectors.toList());
+           List<Integer> movieTypeIds = Arrays.stream(savedUser.getGenres().split(","))
+                   .map(String::trim)
+                   .filter(s -> !s.isEmpty())
+                   .map(Integer::parseInt)
+                   .collect(Collectors.toList());
 
-        return ResponseEntity.ok(new SignupResponse(
-                savedUser.getId(),
-                savedUser.getName(),
-                savedUser.getEmail(),
-                savedUser.getSubscription(),
-                savedUser.getStatus().name(),
-                movieTypeIds
-        ));
+           return ResponseEntity.ok(new SignupResponse(
+                   savedUser.getId(),
+                   savedUser.getName(),
+                   savedUser.getEmail(),
+                   savedUser.getSubscription(),
+                   savedUser.getStatus().name(),
+                   movieTypeIds
+           ));
+       } catch (Exception e){
+           e.printStackTrace(); // Or use a logger to record full stacktrace
+           return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                   .body(Map.of("error", e.getMessage()));
+       }
 
     }
 
@@ -75,7 +81,7 @@ public class AuthenticationController {
             response.addHeader("Set-Cookie", refreshCookie.toString());
 
             // Convert movieTypes string into List<Integer>
-            List<Integer> movieTypeIds = Arrays.stream(user.getMovieTypes().split(","))
+            List<Integer> movieTypeIds = Arrays.stream(user.getGenres().split(","))
                     .map(String::trim)
                     .filter(s -> !s.isEmpty())
                     .map(Integer::parseInt)

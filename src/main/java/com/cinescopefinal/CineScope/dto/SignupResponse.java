@@ -8,7 +8,7 @@ public class SignupResponse {
     private Long id;
     private String name;
     private String email;
-    private String subscription;
+    private Subscription subscription;
     private String status;
     private List<Integer> movieTypes;
 
@@ -45,11 +45,11 @@ public class SignupResponse {
         this.email = email;
     }
 
-    public String getSubscription() {
+    public Subscription getSubscription() {
         return subscription;
     }
 
-    public void setSubscription(String subscription) {
+    public void setSubscription(Subscription subscription) {
         this.subscription = subscription;
     }
 

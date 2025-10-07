@@ -33,7 +33,7 @@ public class CineScopeApplication implements CommandLineRunner {
 			users.setRole(Role.ADMIN);
 			users.setPassword(new BCryptPasswordEncoder().encode("admin"));
 			users.setSubscription(Subscription.PREMIMUM);
-			users.setMovieTypes("1,2,3,4,5");
+			users.setGenres("1,2,3,4,5");
 			users.setStatus(Status.ACTIVE);
 			usersRepository.saveAndFlush(users);
 			System.out.println("Admin user created.");

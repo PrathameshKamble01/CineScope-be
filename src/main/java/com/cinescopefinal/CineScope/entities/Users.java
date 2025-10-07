@@ -36,16 +36,30 @@ public class Users implements UserDetails {
     @Enumerated(EnumType.STRING)
     @Column
     private Status status = Status.ACTIVE;
-    @Column(name = "movie_types")
-    private String movieTypes;
+//    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "user_genres",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "genre_id")
+    )
+    private String genres;
 
-    public String getMovieTypes() {
-        return movieTypes;
+    public String getGenres() {
+        return genres;
     }
 
-    public void setMovieTypes(String movieTypes) {
-        this.movieTypes = movieTypes;
+    public void setGenres(String genres) {
+        this.genres = genres;
     }
+
+    public Long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Long userId) {
+        this.userId = userId;
+    }
+
     public Long getId() {
         return userId;
     }
@@ -134,15 +148,15 @@ public class Users implements UserDetails {
         this.status = status;
     }
 
-    public Users(Long id, String name, String email, String password, Role role, Subscription subscription, Status status, String movieTypes) {
-        this.id = id;
+    public Users(Long id, String name, String email, String password, Role role, Subscription subscription, Status status, String genres) {
+        this.userId = id;
         this.name = name;
         this.email = email;
         this.password = password;
         this.role = role;
         this.subscription = subscription;
         this.status = status;
-        this.movieTypes = movieTypes;
+        this.genres = genres;
     }
 
     public Users() {}
